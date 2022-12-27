@@ -1,0 +1,16 @@
+
+bin/Debug/*
+bin/Release/*
+!bin/Debug/FW1FontWrapper.dll
+!bin/Debug/FW1FontWrapper.x64.dll
+!bin/Release/FW1FontWrapper.dll
+!bin/Release/FW1FontWrapper.x64.dll
+!bin/Release/n_overlay.dll
+!bin/Release/n_overlay.x64.dll
+!bin/Release/n_ovhelper.exe
+!bin/Release/n_ovhelper.x64.exe
+.vs
+.vscode
+.qmake.stash
+*.vcxproj.*
+Objdir

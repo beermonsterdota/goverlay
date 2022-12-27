@@ -12,6 +12,9 @@ enum AppWindows {
   osrpopup = "osrpopup",
 }
 
+const basePath = "http://192.168.1.34:8081/hud";
+// const basePath = "https://vk.com/";
+
 class Application {
   private windows: Map<string, Electron.BrowserWindow>;
   private tray: Electron.Tray | null;
@@ -24,7 +27,7 @@ class Application {
     this.windows = new Map();
     this.tray = null;
 
-    this.Overlay = loadNativeLib()
+    this.Overlay = loadNativeLib();
   }
 
   get mainWindow() {
@@ -103,12 +106,25 @@ class Application {
   public startOverlay() {
     this.Overlay!.start();
     this.Overlay!.setHotkeys([
-      {
-        name: "overlay.hotkey.toggleInputIntercept",
-        keyCode: 113,
-        modifiers: { ctrl: true },
-      },
-      { name: "app.doit", keyCode: 114, modifiers: { ctrl: true } },
+      { name: "app.key0", keyCode: 48, modifiers: { ctrl: false } },
+      { name: "app.key1", keyCode: 49, modifiers: { ctrl: false } },
+      { name: "app.key2", keyCode: 50, modifiers: { ctrl: false } },
+      { name: "app.key3", keyCode: 51, modifiers: { ctrl: false } },
+      { name: "app.key4", keyCode: 52, modifiers: { ctrl: false } },
+      { name: "app.key5", keyCode: 53, modifiers: { ctrl: false } },
+      { name: "app.key6", keyCode: 54, modifiers: { ctrl: false } },
+      { name: "app.key7", keyCode: 55, modifiers: { ctrl: false } },
+      { name: "app.key8", keyCode: 56, modifiers: { ctrl: false } },
+      { name: "app.key9", keyCode: 57, modifiers: { ctrl: false } },
+      { name: "overlay.toggle", keyCode: 113, modifiers: { ctrl: true } },
+      // { name: "app.doit", keyCode: 114, modifiers: { ctrl: true } },
+      { name: "app.reload", keyCode: 116, modifiers: { ctrl: true } }, // ctrl+F5
+      { name: "app.showhide", keyCode: 117, modifiers: { ctrl: true } }, // ctrl+F6
+      { name: "app.showhide1", keyCode: 96, modifiers: { ctrl: false } }, // num 0
+      { name: "app.showhide2", keyCode: 110, modifiers: { ctrl: false } }, // num .
+      { name: "app.tab1", keyCode: 9, modifiers: { ctrl: false } }, // tab
+      { name: "app.tab2", keyCode: 9, modifiers: { ctrl: true } }, // num*
+      // { name: "app.pickban", keyCode: 111, modifiers: { ctrl: false } } // num/
     ]);
 
     this.Overlay!.setEventCallback((event: string, payload: any) => {
@@ -137,6 +153,45 @@ class Application {
       } else if (event === "game.hotkey.down") {
         if (payload.name === "app.doit") {
           this.doit();
+        }
+        if (payload.name === "app.reload") {
+          this.windows.forEach((window) => window.reload());
+        }
+        if (
+          payload.name === "app.showhide" ||
+          payload.name === "app.showhide1" ||
+          payload.name === "app.showhide2"
+        ) {
+          const window = this.getWindow("OverlayTip");
+          if (window) {
+            window.webContents.send("showhide", null);
+          }
+        }
+        if (payload.name === "app.tab1") {
+          const window = this.getWindow("OverlayTip");
+          if (window) {
+            window.webContents.send("tab1", null);
+          }
+        }
+        if (payload.name === "app.tab2") {
+          const window = this.getWindow("OverlayTip");
+          if (window) {
+            window.webContents.send("tab2", null);
+          }
+        }
+        if (payload.name === "app.pickban") {
+          const window = this.getWindow("OverlayTip");
+          if (window) {
+            window.webContents.send("pickban", null);
+          }
+        }
+        console.log("!!", payload.name);
+        if (payload.name.indexOf("app.key") !== -1) {
+          console.log("!!!!", payload.name);
+          const window = this.getWindow("OverlayTip");
+          if (window) {
+            window.webContents.send("key", payload.name);
+          }
         }
       } else if (event === "game.window.focused") {
         console.log("focusWindowId", payload.focusWindowId);
@@ -212,7 +267,7 @@ class Application {
     });
 
     window.on("resize", () => {
-      console.log(`${name} resizing`)
+      console.log(`${name} resizing`);
       this.Overlay!.sendWindowBounds(window.id, {
         rect: {
           x: window.getBounds().x,
@@ -322,9 +377,50 @@ class Application {
     return window;
   }
 
+  public createTestWindow() {
+    const options: Electron.BrowserWindowConstructorOptions = {
+      // width: 2560,
+      // height: 1440,
+      width: 1920,
+      height: 1080,
+      frame: false,
+      show: false,
+      transparent: true,
+      resizable: false,
+      backgroundColor: "#00000000",
+      webPreferences: {
+        zoomFactor: 1,
+        // zoomFactor: 4 / 3,
+        offscreen: true,
+        backgroundThrottling: false,
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    };
+
+    const name = "OverlayTip";
+    const window = this.createWindow(name, options);
+
+    window.setPosition(0, 0);
+    // window.webContents.openDevTools({
+    //   mode: 'detach',
+    // })
+    window.loadURL(basePath);
+
+    window.once("ready-to-show", () => {
+      window.webContents.setZoomFactor(1.0);
+      window.setSize(1920, 1080);
+      // window.webContents.setZoomFactor(4 / 3)
+      // window.setSize(2560, 1440)
+    });
+
+    this.addOverlayWindow(name, window, 0, 0);
+    return window;
+  }
+
   public createOsrStatusbarWindow() {
     const options: Electron.BrowserWindowConstructorOptions = {
-      x: 100, 
+      x: 100,
       y: 0,
       height: 50,
       width: 200,
@@ -354,7 +450,7 @@ class Application {
 
   public createOsrTipWindow() {
     const options: Electron.BrowserWindowConstructorOptions = {
-      x: 0, 
+      x: 0,
       y: 0,
       height: 220,
       width: 320,
@@ -505,18 +601,21 @@ class Application {
         y: 0,
       }).scaleFactor;
 
-      console.log(`starting overlay...`)
+      console.log(`starting overlay...`);
       this.startOverlay();
 
-      this.createOsrWindow();
-      this.createOsrStatusbarWindow();
+      this.createTestWindow();
+      // this.createOsrWindow();
+      // this.createOsrStatusbarWindow();
     });
 
     ipcMain.on("inject", (event, arg) => {
       console.log(`--------------------\n try inject ${arg}`);
       for (const window of this.Overlay.getTopWindows()) {
         if (window.title.indexOf(arg) !== -1) {
-          console.log(`--------------------\n injecting ${JSON.stringify(window)}`);
+          console.log(
+            `--------------------\n injecting ${JSON.stringify(window)}`
+          );
           this.Overlay.injectProcess(window);
         }
       }
