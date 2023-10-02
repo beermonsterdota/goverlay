@@ -138,10 +138,8 @@ class Application {
           // }
 
           if (intpuEvent) {
-            if ('x' in intpuEvent)
-              intpuEvent['x'] = Math.round(intpuEvent['x'] / this.scaleFactor)
-            if ('y' in intpuEvent)
-              intpuEvent['y'] = Math.round(intpuEvent['y'] / this.scaleFactor)
+            if ('x' in intpuEvent) intpuEvent['x'] = Math.round(intpuEvent['x'] / this.scaleFactor)
+            if ('y' in intpuEvent) intpuEvent['y'] = Math.round(intpuEvent['y'] / this.scaleFactor)
             window.webContents.sendInputEvent(intpuEvent)
           }
         }
@@ -157,11 +155,7 @@ class Application {
         if (payload.name === 'app.reload') {
           this.windows.forEach((window) => window.reload())
         }
-        if (
-          payload.name === 'app.showhide' ||
-          payload.name === 'app.showhide1' ||
-          payload.name === 'app.showhide2'
-        ) {
+        if (payload.name === 'app.showhide' || payload.name === 'app.showhide1' || payload.name === 'app.showhide2') {
           const window = this.getWindow('OverlayTip')
           if (window) {
             window.webContents.send('showhide', null)
@@ -221,12 +215,8 @@ class Application {
       name,
       transparent,
       resizable: window.isResizable(),
-      maxWidth: window.isResizable
-        ? display.bounds.width
-        : window.getBounds().width,
-      maxHeight: window.isResizable
-        ? display.bounds.height
-        : window.getBounds().height,
+      maxWidth: window.isResizable ? display.bounds.width : window.getBounds().width,
+      maxHeight: window.isResizable ? display.bounds.height : window.getBounds().height,
       minWidth: window.isResizable ? 100 : window.getBounds().width,
       minHeight: window.isResizable ? 100 : window.getBounds().height,
       nativeHandle: window.getNativeWindowHandle().readUInt32LE(0),
@@ -245,20 +235,12 @@ class Application {
       dragBorderWidth: dragborder,
     })
 
-    window.webContents.on(
-      'paint',
-      (event, dirty, image: Electron.NativeImage) => {
-        if (this.markQuit) {
-          return
-        }
-        this.Overlay!.sendFrameBuffer(
-          window.id,
-          image.getBitmap(),
-          image.getSize().width,
-          image.getSize().height
-        )
+    window.webContents.on('paint', (event, dirty, image: Electron.NativeImage) => {
+      if (this.markQuit) {
+        return
       }
-    )
+      this.Overlay!.sendFrameBuffer(window.id, image.getBitmap(), image.getSize().width, image.getSize().height)
+    })
 
     window.on('ready-to-show', () => {
       window.focusOnWebView()
@@ -359,17 +341,14 @@ class Application {
     // })
     window.loadURL(fileUrl(path.join(global.CONFIG.distDir, 'index/osr.html')))
 
-    window.webContents.on(
-      'paint',
-      (event, dirty, image: Electron.NativeImage) => {
-        if (this.markQuit) {
-          return
-        }
-        this.mainWindow!.webContents.send('osrImage', {
-          image: image.toDataURL(),
-        })
+    window.webContents.on('paint', (event, dirty, image: Electron.NativeImage) => {
+      if (this.markQuit) {
+        return
       }
-    )
+      this.mainWindow!.webContents.send('osrImage', {
+        image: image.toDataURL(),
+      })
+    })
 
     this.addOverlayWindow('MainOverlay', window, 10, 40)
     return window
@@ -438,9 +417,7 @@ class Application {
     // window.webContents.openDevTools({
     //   mode: "detach"
     // })
-    window.loadURL(
-      fileUrl(path.join(global.CONFIG.distDir, 'index/statusbar.html'))
-    )
+    window.loadURL(fileUrl(path.join(global.CONFIG.distDir, 'index/statusbar.html')))
 
     this.addOverlayWindow(name, window, 0, 0)
     return window
@@ -470,9 +447,7 @@ class Application {
     // window.webContents.openDevTools({
     //   mode: "detach"
     // })
-    window.loadURL(
-      fileUrl(path.join(global.CONFIG.distDir, 'index/osrtip.html'))
-    )
+    window.loadURL(fileUrl(path.join(global.CONFIG.distDir, 'index/osrtip.html')))
 
     this.addOverlayWindow(name, window, 30, 40, true)
     return window
@@ -509,9 +484,7 @@ class Application {
 
   public setupSystemTray() {
     if (!this.tray) {
-      this.tray = new Tray(
-        path.join(global.CONFIG.distDir, 'assets/icon-16.png')
-      )
+      this.tray = new Tray(path.join(global.CONFIG.distDir, 'assets/icon-16.png'))
       const contextMenu = Menu.buildFromTemplate([
         {
           label: 'OpenMainWindow',
@@ -564,29 +537,23 @@ class Application {
     shell.openExternal(url)
   }
 
-  private createWindow(
-    name: string,
-    option: Electron.BrowserWindowConstructorOptions
-  ) {
+  private createWindow(name: string, option: Electron.BrowserWindowConstructorOptions) {
     const window = new BrowserWindow(option)
     this.windows.set(name, window)
     window.on('closed', () => {
       this.windows.delete(name)
     })
-    window.webContents.on('new-window', (e, url) => {
-      e.preventDefault()
-      shell.openExternal(url)
-    })
+    // window.webContents.on('new-window', (e, url) => {
+    //   e.preventDefault()
+    //   shell.openExternal(url)
+    // })
 
     if (global.DEBUG) {
-      window.webContents.on(
-        'before-input-event',
-        (event: Electron.Event, input: Electron.Input) => {
-          if (input.key === 'F12' && input.type === 'keyDown') {
-            window.webContents.openDevTools()
-          }
+      window.webContents.on('before-input-event', (event: Electron.Event, input: Electron.Input) => {
+        if (input.key === 'F12' && input.type === 'keyDown') {
+          window.webContents.openDevTools()
         }
-      )
+      })
     }
 
     return window
@@ -611,9 +578,7 @@ class Application {
       console.log(`--------------------\n try inject ${arg}`)
       for (const window of this.Overlay.getTopWindows()) {
         if (window.title.indexOf(arg) !== -1) {
-          console.log(
-            `--------------------\n injecting ${JSON.stringify(window)}`
-          )
+          console.log(`--------------------\n injecting ${JSON.stringify(window)}`)
           this.Overlay.injectProcess(window)
         }
       }
