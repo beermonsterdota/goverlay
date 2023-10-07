@@ -16,7 +16,7 @@
 
 ## Prerequisites
 
-1. Visual Sudio 2019(2022 to build) with latest sdk to build native C++ project.
+1. Visual Sudio 2019(2022 to build dlls) build tools with latest sdk to build native C++ project.
 2. CMake
 3. node 32bit/64bit
 
