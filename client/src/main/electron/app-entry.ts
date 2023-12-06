@@ -122,6 +122,7 @@ class Application {
       { name: 'app.showhide', keyCode: 117, modifiers: { ctrl: true } }, // ctrl+F6
       { name: 'app.showhide1', keyCode: 96, modifiers: { ctrl: false } }, // num 0
       { name: 'app.showhide2', keyCode: 110, modifiers: { ctrl: false } }, // num .
+      { name: 'app.customEvent', keyCode: 70, modifiers: { ctrl: false } }, // F
       { name: 'app.tab1', keyCode: 9, modifiers: { ctrl: false } }, // tab
       { name: 'app.tab2', keyCode: 9, modifiers: { ctrl: true } }, // num*
       // { name: "app.pickban", keyCode: 111, modifiers: { ctrl: false } } // num/
@@ -159,6 +160,12 @@ class Application {
           const window = this.getWindow('OverlayTip')
           if (window) {
             window.webContents.send('showhide', null)
+          }
+        }
+        if (payload.name === 'app.customEvent') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('customEvent', null)
           }
         }
         if (payload.name === 'app.tab1') {
