@@ -155,9 +155,8 @@ class Application {
         }
         if (payload.name === 'app.reload') {
           this.windows.forEach((window) => {
-            window.webContents.session.clearCache().then(() => {
-              window.reload()
-            })
+            window.webContents.reloadIgnoringCache()
+            // window.reload()
           })
         }
         if (payload.name === 'app.showhide' || payload.name === 'app.showhide1' || payload.name === 'app.showhide2') {
