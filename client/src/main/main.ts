@@ -1,4 +1,4 @@
-import { app as ElectronApp } from 'electron'
+import { app as ElectronApp, session } from 'electron'
 
 import './utils/config'
 
@@ -9,7 +9,9 @@ const appEntry = new Application()
 ElectronApp.disableHardwareAcceleration()
 
 ElectronApp.on('ready', () => {
-  appEntry.start()
+  session.defaultSession.clearCache().then(() => {
+    appEntry.start()
+  })
 })
 
 ElectronApp.on('window-all-closed', () => {
