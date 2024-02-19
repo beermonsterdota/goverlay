@@ -119,9 +119,11 @@ class Application {
       { name: 'overlay.toggle', keyCode: 113, modifiers: { ctrl: true } },
       // { name: "app.doit", keyCode: 114, modifiers: { ctrl: true } },
       { name: 'app.reload', keyCode: 116, modifiers: { ctrl: true } }, // ctrl+F5
-      { name: 'app.showhide', keyCode: 117, modifiers: { ctrl: true } }, // ctrl+F6
+      { name: 'app.showhide', keyCode: 125, modifiers: { ctrl: false } }, // f14
       { name: 'app.showhide1', keyCode: 96, modifiers: { ctrl: false } }, // num 0
       { name: 'app.showhide2', keyCode: 110, modifiers: { ctrl: false } }, // num .
+      { name: 'app.showhide3', keyCode: 124, modifiers: { ctrl: false } }, // f13
+      { name: 'app.showhide4', keyCode: 126, modifiers: { ctrl: false } }, // f15
       { name: 'app.customEvent', keyCode: 70, modifiers: { ctrl: false } }, // F
       { name: 'app.tab1', keyCode: 9, modifiers: { ctrl: false } }, // tab
       { name: 'app.tab2', keyCode: 9, modifiers: { ctrl: true } }, // num*
@@ -156,7 +158,13 @@ class Application {
         if (payload.name === 'app.reload') {
           this.windows.forEach((window) => window.reload())
         }
-        if (payload.name === 'app.showhide' || payload.name === 'app.showhide1' || payload.name === 'app.showhide2') {
+        if (
+          payload.name === 'app.showhide' ||
+          payload.name === 'app.showhide1' ||
+          payload.name === 'app.showhide2' ||
+          payload.name === 'app.showhide3' ||
+          payload.name === 'app.showhide4'
+        ) {
           const window = this.getWindow('OverlayTip')
           if (window) {
             window.webContents.send('showhide', null)
