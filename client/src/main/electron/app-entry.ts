@@ -156,7 +156,10 @@ class Application {
           this.doit()
         }
         if (payload.name === 'app.reload') {
-          this.windows.forEach((window) => window.reload())
+          this.windows.forEach((window) => {
+            window.webContents.reloadIgnoringCache()
+            // window.reload()
+          })
         }
         if (
           payload.name === 'app.showhide' ||
