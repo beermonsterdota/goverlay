@@ -1,2 +1,2 @@
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe" gameoverlay.sln /t:build /p:Configuration=Release /p:Platform=Win32
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe" gameoverlay.sln /t:build /p:Configuration=Release /p:Platform=x64
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Msbuild\Current\Bin\MSBuild.exe" gameoverlay.sln /t:build /p:Configuration=Release /p:Platform=Win32
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Msbuild\Current\Bin\MSBuild.exe" gameoverlay.sln /t:build /p:Configuration=Release /p:Platform=x64
