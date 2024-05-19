@@ -12,7 +12,7 @@ enum AppWindows {
   osrpopup = 'osrpopup',
 }
 
-const basePath = 'http://127.0.0.1:8081/hud'
+const basePath = 'http://localhost:8081/hud'
 // const basePath = "https://vk.com/";
 
 class Application {
