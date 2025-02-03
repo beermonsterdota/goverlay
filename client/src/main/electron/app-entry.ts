@@ -1,7 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import { Menu, Tray } from 'electron'
 import { screen, shell } from 'electron'
-import * as fs from 'fs'
 import * as path from 'path'
 import { loadNativeLib } from '../utils/loadoverlay'
 import { fileUrl } from '../utils/utils'
@@ -13,7 +12,6 @@ enum AppWindows {
 }
 
 const basePath = 'http://localhost:8081/hud'
-// const basePath = "https://vk.com/";
 
 class Application {
   private windows: Map<string, Electron.BrowserWindow>
@@ -117,17 +115,24 @@ class Application {
       { name: 'app.key8', keyCode: 56, modifiers: { ctrl: false } },
       { name: 'app.key9', keyCode: 57, modifiers: { ctrl: false } },
       { name: 'overlay.toggle', keyCode: 113, modifiers: { ctrl: true } },
-      // { name: "app.doit", keyCode: 114, modifiers: { ctrl: true } },
       { name: 'app.reload', keyCode: 116, modifiers: { ctrl: true } }, // ctrl+F5
       { name: 'app.showhide', keyCode: 125, modifiers: { ctrl: false } }, // f14
       { name: 'app.showhide1', keyCode: 96, modifiers: { ctrl: false } }, // num 0
       { name: 'app.showhide2', keyCode: 110, modifiers: { ctrl: false } }, // num .
       { name: 'app.showhide3', keyCode: 124, modifiers: { ctrl: false } }, // f13
       { name: 'app.showhide4', keyCode: 126, modifiers: { ctrl: false } }, // f15
+      { name: 'app.quickStatsKDA', keyCode: 81, modifiers: { ctrl: false } }, // Q
+      { name: 'app.quickStatsLH', keyCode: 87, modifiers: { ctrl: false } }, // W
+      { name: 'app.quickStatsLVL', keyCode: 69, modifiers: { ctrl: false } }, // E
+      { name: 'app.quickStatsXPM', keyCode: 82, modifiers: { ctrl: false } }, // R
+      { name: 'app.quickStatsCurrentGold', keyCode: 84, modifiers: { ctrl: false } }, // T
+      { name: 'app.quickStatsNetworth', keyCode: 89, modifiers: { ctrl: false } }, // Y
+      { name: 'app.quickStatsGPM', keyCode: 85, modifiers: { ctrl: false } }, // Y
+      { name: 'app.quickStatsBuyback', keyCode: 73, modifiers: { ctrl: false } }, // I
+
       { name: 'app.customEvent', keyCode: 70, modifiers: { ctrl: false } }, // F
       { name: 'app.tab1', keyCode: 9, modifiers: { ctrl: false } }, // tab
       { name: 'app.tab2', keyCode: 9, modifiers: { ctrl: true } }, // num*
-      // { name: "app.pickban", keyCode: 111, modifiers: { ctrl: false } } // num/
     ])
 
     this.Overlay!.setEventCallback((event: string, payload: any) => {
@@ -171,6 +176,54 @@ class Application {
           const window = this.getWindow('OverlayTip')
           if (window) {
             window.webContents.send('showhide', null)
+          }
+        }
+        if (payload.name === 'app.quickStatsKDA') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'kda')
+          }
+        }
+        if (payload.name === 'app.quickStatsLH') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'lh')
+          }
+        }
+        if (payload.name === 'app.quickStatsLVL') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'lvl')
+          }
+        }
+        if (payload.name === 'app.quickStatsXPM') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'xpm')
+          }
+        }
+        if (payload.name === 'app.quickStatsCurrentGold') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'currentGold')
+          }
+        }
+        if (payload.name === 'app.quickStatsNetworth') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'networth')
+          }
+        }
+        if (payload.name === 'app.quickStatsGPM') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'gpm')
+          }
+        }
+        if (payload.name === 'app.quickStatsBuyback') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStats', 'buyback')
           }
         }
         if (payload.name === 'app.customEvent') {
@@ -257,7 +310,12 @@ class Application {
       if (this.markQuit) {
         return
       }
-      this.Overlay!.sendFrameBuffer(window.id, image.getBitmap(), image.getSize().width, image.getSize().height)
+      this.Overlay!.sendFrameBuffer(
+        window.id,
+        image.getBitmap(),
+        image.getSize().width,
+        image.getSize().height
+      )
     })
 
     window.on('ready-to-show', () => {
@@ -567,11 +625,14 @@ class Application {
     // })
 
     if (global.DEBUG) {
-      window.webContents.on('before-input-event', (event: Electron.Event, input: Electron.Input) => {
-        if (input.key === 'F12' && input.type === 'keyDown') {
-          window.webContents.openDevTools()
+      window.webContents.on(
+        'before-input-event',
+        (event: Electron.Event, input: Electron.Input) => {
+          if (input.key === 'F12' && input.type === 'keyDown') {
+            window.webContents.openDevTools()
+          }
         }
-      })
+      )
     }
 
     return window
