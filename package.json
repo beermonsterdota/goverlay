@@ -1,31 +1,33 @@
 {
-    "name": "gelectron",
-    "version": "1.0.1",
-    "main": "./client/dist/main/main.js",
-    "license": "MIT",
-    "scripts": {
-        "build:renderer": "webpack --config ./client/webpack.config.renderer.js",
-        "build:main": "tsc --project ./client/tsconfig.json",
-        "build": "npm run build:main && npm run build:renderer",
-        "build:addon:x86": "(cmake-js -G \"Visual Studio 16 2019\" -A Win32 -O build_Win32)",
-        "build:addon:x64": "(cmake-js -G \"Visual Studio 16 2019\" -A x64 -O build_x64)",
-        "start": "electron . --enable-logging",
-        "copy_binary": "copy_binary.bat"
-    },
-    "devDependencies": {
-        "cmake-js": "^7.2.1",
-        "electron-rebuild": "^3.2.7",
-        "ts-loader": "^9.4.4",
-        "typescript": "^5.2.2",
-        "webpack": "^5.88.2",
-        "webpack-cli": "^5.1.4"
-    },
-    "dependencies": {
-        "electron": "26.2.4",
-        "node-addon-api": "^7.0.0"
-    },
-    "cmake-js": {
-        "runtime": "electron",
-        "runtimeVersion": "16.0.10"
-      }
+  "name": "gelectron",
+  "version": "1.0.1",
+  "main": "./client/dist/main/main.js",
+  "license": "MIT",
+  "scripts": {
+    "build:renderer": "webpack --config ./client/webpack.config.renderer.js",
+    "build:main": "tsc --project ./client/tsconfig.json",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:addon:x86": "(cmake-js -G \"Visual Studio 16 2019\" -A Win32 -O build_Win32)",
+    "build:addon:x64": "(cmake-js -G \"Visual Studio 16 2019\" -A x64 -O build_x64)",
+    "start": "electron . --enable-logging",
+    "copy_binary": "copy_binary.bat",
+    "build:exe": "npm run build && electron-packager ./ goverlay --platform=win32 --arch=x64 --overwrite"
+  },
+  "devDependencies": {
+    "cmake-js": "^7.2.1",
+    "electron-packager": "^17.1.2",
+    "electron-rebuild": "^3.2.7",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "electron": "26.2.4",
+    "node-addon-api": "^7.0.0"
+  },
+  "cmake-js": {
+    "runtime": "electron",
+    "runtimeVersion": "16.0.10"
+  }
 }

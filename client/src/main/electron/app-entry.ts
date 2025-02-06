@@ -588,7 +588,6 @@ class Application {
     this.createMainWindow()
 
     this.setupSystemTray()
-
     this.setupIpc()
   }
 
