@@ -129,7 +129,7 @@ class Application {
       { name: 'app.quickStatsNetworth', keyCode: 89, modifiers: { ctrl: false } }, // Y
       { name: 'app.quickStatsGPM', keyCode: 85, modifiers: { ctrl: false } }, // Y
       { name: 'app.quickStatsBuyback', keyCode: 73, modifiers: { ctrl: false } }, // I
-
+      { name: 'app.quickStatsToggle', keyCode: 68, modifiers: { ctrl: false } }, // D
       { name: 'app.customEvent', keyCode: 70, modifiers: { ctrl: false } }, // F
       { name: 'app.tab1', keyCode: 9, modifiers: { ctrl: false } }, // tab
       { name: 'app.tab2', keyCode: 9, modifiers: { ctrl: true } }, // num*
@@ -224,6 +224,12 @@ class Application {
           const window = this.getWindow('OverlayTip')
           if (window) {
             window.webContents.send('quickStats', 'buyback')
+          }
+        }
+        if (payload.name === 'app.quickStatsToggle') {
+          const window = this.getWindow('OverlayTip')
+          if (window) {
+            window.webContents.send('quickStatsToggle', null)
           }
         }
         if (payload.name === 'app.customEvent') {
